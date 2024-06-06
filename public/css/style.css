@@ -1,0 +1,227 @@
+
+.header {
+    background-color: transparent;
+    color: #fff !important;
+    text-align: center;
+    padding: 1px 0;
+    margin-top: 30px; /* Ajouter de la marge pour compenser la hauteur de .header-top */
+}
+
+.header-logo {
+    display: inline-block;
+    vertical-align: middle; /* Alignement vertical avec les liens */
+}
+.header-logo img {
+    width: 120px; /* Taille réduite du logo */
+}
+.header-links {
+    display: inline-block;
+    vertical-align: middle; /* Alignement vertical avec le logo */
+    margin-left: 20px; /* Marge à gauche pour séparer du logo */
+    margin-right: 20px;
+}
+
+.header-links a {
+    color: #333D2F;
+    margin: 0 20px;
+    font-size: 18px;
+    font-family: 'Tenor Sans', cursive, sans-serif;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.header-links a:hover {
+    color: #51814e;
+}
+
+.header-top {
+    background-color: #C9D4CB;
+    color: #fff;
+    padding: 10px 0 !important; /* Ajustement du padding */
+    text-align: center; /* Centrage du texte */
+    align-items: center; /* Centrage vertical */
+    margin-top: 2px;
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 500px;
+    margin: -20px 10px 0;
+    float: right;
+}
+
+/* Style pour les boutons de connexion et de déconnexion */
+.button-78,
+.button-77 {
+    background-color: #51814e;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px; /* Marge entre les boutons */
+}
+
+/* Style pour le bouton de connexion */
+.button-78 {
+    margin-left: 0; /* Supprimer la marge gauche */
+}
+
+/* Style pour le conteneur des boutons */
+.header-buttons {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* Déplacer vers la droite autant que possible */
+}
+
+.logout-link {
+    margin-left: 10px; /* Ajout d'espace entre les boutons */
+}
+
+
+
+
+:root {
+    --first-bg-color: #ffffff;
+    --container-color: #f0f0f0; /* Exemple de couleur */
+    --text-color: #333333; /* Exemple de couleur */
+    --first-color: #ff0000; /* Exemple de couleur */
+    --shadow-smooth: 0 0 10px rgba(0, 0, 0, 0.1); /* Exemple de valeur pour l'ombre */
+    --form-size: 16px; /* Exemple de taille de police */
+}
+
+/* ===== Recipes Section ===== */
+.recipes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* ===== Recipe Cards ===== */
+.recipe-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3.5rem;
+}
+.recipe-card {
+    background-color: var(--first-bg-color);
+    flex-basis: 100%;
+    max-width: 330px;
+    box-shadow: var(--shadow-smooth);
+    border-radius: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Recipe Card Header */
+.recipe-card-header .image {
+    height: 200px;
+}
+.recipe-card-header .image img {
+    border-top-right-radius: 2rem;
+    border-top-left-radius: 2rem;
+}
+.recipe-card-header h3 {
+    text-transform: capitalize;
+    text-align: center;
+    padding: 1rem;
+    background-color: var(--container-color);
+}
+
+/* Recipe Card Body */
+.recipe-card-body {
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+}
+.recipe-card-content {
+    padding: 2rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+.recipe-card-content:last-of-type {
+    justify-content: space-between;
+    border-top: 0.2rem solid var(--text-color);
+    border-bottom: 0.2rem solid var(--text-color);
+}
+.recipe-card-content .member {
+    font-size: 1.7rem;
+}
+.recipe-card .stars {
+    display: flex;
+    gap: 0.3rem;
+}
+
+/* Recipe Card Item */
+.recipe-card-item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Recipe Card Footer */
+.recipe-card-footer {
+    padding: 2rem 0;
+    display: flex;
+    justify-content: center;
+}
+.recipe-card-footer a {
+    text-transform: capitalize;
+    text-align: center;
+}
+
+/* ===== Forms Section ===== */
+.container-form {
+    max-width: 700px;
+}
+.styled-form {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 800px;
+    font-size: var(--form-size);
+    background-color: var(--container-color);
+    padding: 3rem;
+    border-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+.styled-form .form-group {
+    width: 100%;
+    border-left: 0.5rem solid var(--first-color);
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Form Title */
+.form-title {
+    padding: 1rem;
+}
+
+/* Images in Form */
+.styled-form .vich-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+.styled-form .vich-image a {
+    flex-basis: 100%;
+}
+.styled-form img {
+    max-width: 600px;
+    max-height: 600px;
+}
+

@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Recette{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" href="{{ asset('css/recette.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}
+
+
+
+{% block body %}
+    <div class="container">
+        <a href="{{ path('app_recette_index') }}" class="back-link">Back to list</a> {# Déplacer le lien "Back to list" avant le formulaire #}
+
+        <h1>Create new Recette</h1>
+
+        {{ form_start(form) }}
+        <div class="form-group">
+            {{ form_row(form.titre, {'attr': {'class': 'form-control', 'placeholder': 'Titre'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.ingredients, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_row(form.contenu, {'attr': {'class': 'form-control-file'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.temp_prep, {'attr': {'class': 'form-control', 'placeholder': 'Temps de préparation (en minutes)'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.temp_cuisson, {'attr': {'class': 'form-control', 'placeholder': 'Temps de cuisson (en minutes)'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.difficulte, {'attr': {'class': 'form-control'}}) }} {# Afficher le champ difficulté ici #}
+        </div>
+        <div class="form-group">
+            <div class="selected-categories"></div>
+            {{ form_row(form.categories, {'attr': {'class': 'form-control category-search'}}) }}
+        </div>
+
+        <div class="form-group text-center"> {# Centrer le bouton "Save" #}
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+        {{ form_end(form) }} {# Placer le bouton "Save" après la fin du formulaire #}
+
+        {# Afficher le lien vers le fichier contenu #}
+        {% if recette.contenu is not empty %}
+            {% if recette.contenu.filename|lower|split('.').last in ['jpg', 'jpeg', 'png', 'gif'] %}
+                <img src="{{ asset('uploads/' ~ recette.contenu) }}" alt="Image" style="max-width: 100%; height: auto;">
+            {% elseif recette.contenu.filename|lower|split('.').last in ['mp4', 'avi', 'mov'] %}
+                <video controls style="max-width: 100%; height: auto;">
+                    <source src="{{ asset('uploads/' ~ recette.contenu) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

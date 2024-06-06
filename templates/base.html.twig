@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Mes Recettes!{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-gJ5LOlaAFZL+8r3GHNUeIMZy0IqGG84Hb99AaSE+yl6LvlWvKq+VxZ5fpSEr6V/v" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'></link>
+        <style>
+            :root {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: 'Avenir', Helvetica, Arial, sans-serif;
+            }
+            body {
+                background-color: #ECF1ED !important; /* Définir la couleur de fond */
+                font-family: 'Avenir', Helvetica, Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+            .container {
+                flex: 1;
+            }
+            .footer {
+                position: relative;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 1rem;
+                background: #000000;
+                color: #ffffff;
+                font-weight: 500;
+                text-align: center;
+            }
+            .userna {
+                font-size: 14px;
+                font-weight: bold;
+            }
+            .no-image {
+                width: 100%;
+                height: 100%;
+                background-color: #ccc;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 12px;
+            }
+            .logout-link {
+                margin-right: 20px; /* Ajout d'espace */
+                color: red;
+                text-decoration: none;
+            }
+            .header-top {
+                background-color: #C9D4CB;
+                color: #fff;
+                padding: 10px 0; /* Ajustement du padding */
+                display: flex;
+                justify-content: space-between; /* Espace entre les éléments */
+                align-items: center; /* Centrage vertical */
+                margin-top: 0;
+                z-index: 1000;
+            }
+            .profile-section {
+                display: flex;
+                align-items: center;
+            }
+            .profile-link {
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                color: black;
+                margin-left: 20px; /* Ajout d'espace à gauche */
+            }
+            .profile-picture {
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                overflow: hidden;
+                margin-right: 20px; /* Ajout d'espace */
+            }
+            .profile-picture img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .auth-links {
+                display: flex;
+                align-items: center;
+                margin-left: auto;
+            }
+            .button-78, .button-77 {
+                margin: 0 5px;
+            }
+        </style>
+    {% endblock %}
+    {% block javascripts %}
+        <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+                document.querySelector("#year").innerText = new Date().getFullYear();
+            });
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer></script>
+        <script type="text/javascript" src="{{ asset('js/main.js') }}" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js" defer></script>
+    {% endblock %}
+</head>
+<body>
+<div class="header-top">
+    <div class="profile-section">
+        {% if app.user %}
+            <a href="{{ path('app_profile') }}" class="profile-link">
+                <div class="profile-picture">
+                    {% if app.user.getPhotoProfil() %}
+                        <img src="{{ asset('uploads/' ~ app.user.getPhotoProfil()) }}" alt="Photo de profil">
+                    {% else %}
+                        <div class="no-image">Pas de photo de profil</div>
+                    {% endif %}
+                </div>
+                <div class="userna">{{ app.user.username }}</div>
+            </a>
+        {% endif %}
+    </div>
+    <div class="auth-links">
+        {% if app.user %}
+            <a href="{{ path('app_logout') }}" class="logout-link">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="button-78" role="button">Connexion</a>
+            <a href="{{ path('app_register') }}" class="button-77" role="button">S'inscrire</a>
+        {% endif %}
+    </div>
+</div>
+
+<header class="header">
+    <div class="header-links">
+        <a href="/">Accueil</a>
+        <a href="{{ path('app_recette_index') }}">Recettes</a>
+    </div>
+    <div class="header-logo">
+        <img src="{{ asset('images/Logo.png') }}" alt="Logo">
+    </div>
+    <div class="header-links">
+        <a href="/categorie">Categorie</a>
+        <a href="#">Autre lien</a>
+    </div>
+</header>
+<div class="container">
+    {% block body %}{% endblock %}
+</div>
+
+<div class="footer">
+    &copy;<span id="year"></span><span> Delice Culinaire. Tous droits réservés.</span>
+</div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Catégories{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            background-color: #ECF1EDFF !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center mt-3 mb-3">Liste des Catégories</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+
+                    </thead>
+                    <tbody>
+                    {% for categorie in categories %}
+                        <tr>
+                            <td>
+                                {% if categorie.image %}
+                                    <img src="{{ asset('uploads/' ~ categorie.image) }}" alt="Image de la catégorie" class="rounded-circle" style="width: 50px; height: 50px;">
+                                {% else %}
+                                    <div class="rounded-circle" style="width: 50px; height: 50px; background-color: {{ categorie.couleur }} !important; color: white; display: flex; justify-content: center; align-items: center; font-size: 24px;">{{ categorie.nom|slice(0, 1) }}</div>
+                                {% endif %}
+                            </td>
+                            <td style="color: {{ categorie.couleur }}">{{ categorie.nom }}</td>
+                            <td style="font-size: smaller;">
+                                {% if categorie.description %}
+                                    {% set truncatedDescription = categorie.description|slice(0, 20) %}
+                                    {% if categorie.description|length > 20 %}
+                                        {{ truncatedDescription ~ '...' }}
+                                    {% else %}
+                                        {{ truncatedDescription }}
+                                    {% endif %}
+                                {% else %}
+                                    Aucune description
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% set nombreRecettes = categorie.nombreRecettes %}
+                                {{ nombreRecettes }}
+                            </td>
+                            <td>
+                                <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}"><i class='bx bx-show'></i></a>
+                                <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}"><i class="bx bx-edit"></i></a>
+                                <form action="{{ path('app_categorie_delete', {'id': categorie.id}) }}" method="post" style="display: inline-block;">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorie.id) }}">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')"><i class="bx bx-x"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">Aucune catégorie trouvée.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <a href="{{ path('app_categorie_new') }}" class="btn btn-success"><i class="fas fa-plus"></i> Ajouter une Catégorie</a>
+        </div>
+    </div>
+{% endblock %}

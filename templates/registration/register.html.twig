@@ -1,0 +1,80 @@
+{% block body %}
+    <head>
+        <meta charset="UTF-8">
+        <title>Register</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ asset('css/register.css') }}">
+        <style>
+            /* CSS personnalisé pour le champ de fichier */
+            .custom-file-label {
+                width: 300px; /* Largeur personnalisée */
+                height: 50px; /* Hauteur personnalisée */
+                line-height: 50px; /* Pour centrer le texte verticalement */
+            }
+
+            /* Style du logo de téléchargement */
+            .download-icon {
+                margin-right: 5px; /* Marge à droite pour l'espacement */
+                width: 20px; /* Largeur personnalisée de l'icône */
+                height: 20px; /* Hauteur personnalisée de l'icône */
+            }
+
+            /* Style pour augmenter la largeur du bouton de téléchargement */
+            .download-button {
+                width: 400px; /* Largeur personnalisée du bouton de téléchargement */
+                display: flex; /* Utiliser Flexbox */
+                align-items: center; /* Aligner verticalement */
+                justify-content: center; /* Aligner horizontalement */
+            }
+
+            /* Style pour masquer le champ de fichier */
+            .hidden-input {
+                display: none;
+            }
+        </style>
+    </head>
+    <body class="align">
+    <div class="grid align__item">
+        <div class="register">
+            <h2><img src="{{ asset('./images/Logo.png') }}" alt="NutriFitHub Logo" class="logo-img me-2"></h2>
+            <h2>Register</h2>
+            <form action="{{ path('app_register') }}" method="post" class="form" id="registrationForm" enctype="multipart/form-data">
+                {# Afficher le champ CSRF et le sauvegarder dans une variable #}
+                {% set csrfToken = csrf_token('registration_form') %}
+                {{ form_widget(registrationForm._token, { 'value': csrfToken }) }}
+
+                {{ form_errors(registrationForm) }}
+
+                <div class="form__field">
+                    {{ form_row(registrationForm.username, {'label': 'Nom d\'utilisateur' }) }}
+                </div>
+                <div class="form__field">
+
+                    {{ form_row(registrationForm.plainPassword, {'label': 'Mot de passe '}) }}
+                </div>
+
+                <div class="form__field">
+                    <label class="form-label">Photo de profil</label>
+                    <div class="input-group">
+                        {{ form_widget(registrationForm.photo_profil) }} {# Afficher le champ #}
+
+                    </div>
+                </div>
+
+                <div class="form__field">
+                    {{ form_row(registrationForm.agreeTerms) }}
+                </div>
+
+                <div class="form__field">
+                    <button type="submit" class="btn btn--submit">Register</button>
+                </div>
+                {{ form_end(registrationForm) }}
+
+                <p class="log">Already have an account? <a href="{{ path('app_login') }}">Log in</a></p>
+            </form>
+        </div>
+    </div>
+    </body>
+
+{% endblock %}

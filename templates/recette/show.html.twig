@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la recette{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">{{ recette.titre }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"><strong>Description: </strong>{{ recette.description }}</p>
+                        <hr>
+                        <h6 class="card-subtitle mb-2 text-muted">Ingrédients:</h6>
+                        <ul class="list-group">
+                            {% set ingredients = recette.ingredients|split("\n") %}
+                            {% for ingredient in ingredients %}
+                                <li class="list-group-item">{{ ingredient }}</li>
+                            {% endfor %}
+                        </ul>
+                        <hr>
+                        <h6 class="card-subtitle mb-2 text-muted">Contenu:</h6>
+                        {% if recette.contenu is not empty %}
+                            {% set filename = recette.contenu %}
+                            {% if filename|split('.')|length > 1 %}
+                                {% set extension = filename|split('.')|last|lower %}
+                                {% if extension in ['jpg', 'jpeg', 'png', 'gif', 'webp'] %}
+                                    <img src="{{ asset('uploads/' ~ filename) }}" alt="Image" class="img-fluid">
+                                {% elseif extension in ['mp4', 'avi', 'mov'] %}
+                                    <video controls class="img-fluid">
+                                        <source src="{{ asset('uploads/' ~ filename) }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        <hr>
+                        <p><stroneng>Moyenne des notes:</stroneng> {{ recette.MoyenneNote }}</p>
+                        <p><strong>Nombre de notes:</strong> {{ recette.nmbrNote }}</p>
+                        <p><strong>Temps de préparation:</strong> {{ recette.tempPrep }}</p>
+                        <a href="{{ path('app_recette_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                        <a href="{{ path('app_recette_edit', {'id': recette.id}) }}" class="btn btn-primary">Modifier</a>
+                        {{ include('recette/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

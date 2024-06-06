@@ -1,0 +1,36 @@
+{# templates/recette/details.html.twig #}
+
+{# Afficher les détails de la recette #}
+<h1>{{ recette.titre }}</h1>
+<p>{{ recette.description }}</p>
+<img src="{{ asset('uploads/' ~ recette.image) }}" alt="{{ recette.titre }}">
+
+{# Bouton de favori #}
+{% if estDansFavoris(recette) %}
+    <a href="{{ path('favoris_supprimer', {'id': recette.id}) }}"><i class="fas fa-heart"></i></a>
+{% else %}
+    <a href="{{ path('favoris_ajouter', {'id': recette.id}) }}"><i class="far fa-heart"></i></a>
+{% endif %}
+
+{# Afficher les autres attributs de la recette #}
+<ul>
+    <li>Temps de préparation: {{ recette.tempPrep }} minutes</li>
+    <li>Temps de cuisson: {{ recette.tempCuisson }} minutes</li>
+    <li>Difficulté:
+        {% if recette.difficulte == 1 %}
+            Facile
+        {% elseif recette.difficulte == 2 %}
+            Moyenne
+        {% elseif recette.difficulte == 3 %}
+            Difficile
+        {% endif %}
+    </li>
+    <li>Ingrédients: {{ recette.ingredients }}</li>
+    <li>Catégories:
+        {% for category in recette.categories %}
+            {{ category.nom }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </li>
+    <li>Utilisateur: {{ recette.user.username }}</li>
+    <li>Date de création: {{ recette.dateCreation|date('Y-m-d H:i:s') }}</li>
+</ul>

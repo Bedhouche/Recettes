@@ -1,0 +1,52 @@
+{# templates/categorie/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Categorie{% endblock %}
+
+{% block body %}
+    <h1>Categorie</h1>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <td>
+                {% if categorie.image %}
+                    <img src="{{ asset('uploads/' ~ categorie.image) }}" alt="Image de la catégorie">
+                {% else %}
+                    Aucune image
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td style="color: {{ categorie.couleur }}">{{ categorie.nom }}</td>
+        </tr>
+        <tr>
+            <td>{{ categorie.description }}</td>
+        </tr>
+        <tr>
+            <td>{{ categorie.dateCreation ? categorie.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+        </tr>
+        <tr>
+            <td>{{ categorie.nombreRecettes }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Recettes</h2>
+    {% if recettes is not empty %}
+        <ul>
+            {% for recette in recettes %}
+                <li><a href="{{ path('app_recette_show', {'id': recette.id}) }}">{{ recette.titre }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune recette associée à cette catégorie.</p>
+    {% endif %}
+
+    <a href="{{ path('app_categorie_index') }}">Retour à la liste</a>
+
+    <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}">Modifier</a>
+
+    {{ include('categorie/_delete_form.html.twig') }}
+{% endblock %}

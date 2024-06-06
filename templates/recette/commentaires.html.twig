@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Commentaires de la recette "{{ recette.titre }}"
+{% endblock %}
+
+{% block body %}
+    <h1>Commentaires de la recette "{{ recette.titre }}"</h1>
+
+    {% if commentaires|length > 0 %}
+        <ul>
+            {% for commentaire in commentaires %}
+                <li>
+                    <div style="display: flex; align-items: center;">
+                        <div style="margin-right: 10px;">
+                            {% if commentaire.getUsers().getPhotoProfil() %}
+                                <img src="{{ asset('uploads/' ~ commentaire.getUsers().getPhotoProfil()) }}" alt="Photo de profil" style="width: 50px; height: 50px; border-radius: 50%;">
+                            {% else %}
+                                <div class="no-image">Pas de photo de profil</div>
+                            {% endif %}
+                        </div>
+                        <div style="width: 40%;">
+                            <div>
+                                <strong>{{ commentaire.getUsers().getUsername() }}</strong><br>
+                                {% if commentaire.getContenu()|length > 100 %}
+                                    <div id="short_content_{{ commentaire.getId() }}">
+                                        {{ commentaire.getContenu()|slice(0, 100) }}... <a href="#" onclick="toggleContent('{{ commentaire.getId() }}')">Lire plus</a>
+                                    </div>
+                                    <div id="full_content_{{ commentaire.getId() }}" style="display: none;">
+                                        {{ commentaire.getContenu() }}
+                                    </div>
+                                {% else %}
+                                    {{ commentaire.getContenu() }}
+                                {% endif %}
+                                <br>
+                                <small>{{ commentaire.getDateCreation() ? commentaire.getDateCreation()|date('Y-m-d H:i:s') : '' }}</small><br>
+                            </div>
+                        </div>
+
+                        <div>
+                            <a href="{{ path('app_commentaire_edit', {'id': commentaire.getId()}) }}"><i class='bx bx-pencil'></i></a>
+                            <a href="{{ path('app_commentaire_delete', {'id': commentaire.getId()}) }}"><i class='bx bx-show'></i></a>
+                            {{ include('commentaire/_delete_form.html.twig') }}
+
+                        </div>
+                    </div>
+                </li>
+            {% else %}
+                <li>Aucun commentaire pour cette recette.</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun commentaire pour cette recette.</p>
+    {% endif %}a
+
+    <a href="{{ path('app_commentaire_new', {'recetteId': recette.id}) }}">Ajouter un commentaire</a>
+
+    <script>
+        function toggleContent(commentId) {
+            var shortContentElement = document.getElementById('short_content_' + commentId);
+            var fullContentElement = document.getElementById('full_content_' + commentId);
+            shortContentElement.style.display = 'none';
+            fullContentElement.style.display = 'block';
+        }
+    </script>
+{% endblock %}

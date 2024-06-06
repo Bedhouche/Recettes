@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Commentaire{% endblock %}
+
+{% block body %}
+    <h1>Create new Commentaire</h1>
+
+    {{ include('commentaire/_form.html.twig') }}
+
+    <a href="{{ path('app_recette_commentaires', {'id': recette.id}) }}">Voir les commentaires</a>
+{% endblock %}

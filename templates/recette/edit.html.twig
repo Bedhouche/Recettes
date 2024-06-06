@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Recette{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/recette.css') }}">
+    <style>
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-group .btn {
+            flex: 1;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <a href="{{ path('app_recette_index') }}" class="back-link">Back to list</a>
+
+        <h1>Edit Recette</h1>
+
+        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+        <div class="form-group">
+            {{ form_row(form.titre, {'attr': {'class': 'form-control', 'placeholder': 'Titre'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.ingredients, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.contenu, {'attr': {'class': 'form-control-file'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.temp_prep, {'attr': {'class': 'form-control', 'placeholder': 'Temps de préparation (en minutes)'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.temp_cuisson, {'attr': {'class': 'form-control', 'placeholder': 'Temps de cuisson (en minutes)'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.difficulte, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group">
+            <div class="selected-categories"></div>
+            {{ form_row(form.categories, {'attr': {'class': 'form-control category-search'}}) }}
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+        {{ form_end(form) }}
+
+        <div class="btn-group">
+            {{ include('recette/_delete_form.html.twig', { 'recette': recette }) }}
+        </div>
+    </div>
+{% endblock %}

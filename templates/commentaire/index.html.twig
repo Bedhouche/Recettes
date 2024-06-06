@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    {% if recette is defined and recette is not null %}
+        Commentaires de la recette "{{ recette.titre }}"
+    {% else %}
+        Liste des commentaires
+    {% endif %}
+{% endblock %}

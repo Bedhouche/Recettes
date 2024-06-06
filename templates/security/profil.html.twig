@@ -1,0 +1,375 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/profil.css') }}">
+
+    <style>
+        .profile-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .pheader-links {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pheader-links a {
+            margin: 0 10px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333D2F;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f8f8f8;
+        }
+
+        .pheader-links a.active {
+            background-color: #333D2F;
+            color: #fff;
+        }
+
+        .recipes-section {
+            display: none;
+        }
+
+        .recipes-section.active {
+            display: block;
+        }
+        .recette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .recette-card {
+            position: relative;
+            border: 4px solid #ccc;
+            padding: 10px;
+            background-color: #eff3ef;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: black;
+        }
+
+        .recette-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            margin-top: 10px; /* Add margin to create space between time info and image */
+        }
+
+        .heart-icon-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+        }
+
+        .heart-icon {
+            font-size: 40px;
+            cursor: pointer;
+            color: #e01111;
+            background: none;
+            border: none;
+            outline: none;
+        }
+
+        .is-favori .heart-icon {
+            color: red;
+        }
+
+        .likes-count {
+            font-size: 18px;
+            color: #333D2F;
+            margin-top: 5px;
+        }
+
+        .facile {
+            border-color: green; /* Couleur de la bordure pour la difficulté facile */
+        }
+        .moyenne {
+            border-color: orange; /* Couleur de la bordure pour la difficulté moyenne */
+        }
+        .difficile {
+            border-color: red; /* Couleur de la bordure pour la difficulté difficile */
+        }
+        .time-info {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            color: #333D2F;
+        }
+
+        .time-info i {
+            margin-right: 5px;
+        }
+
+        .heart-icon-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .heart-icon-container a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .categories {
+            margin-bottom: 10px;
+        }
+        .category {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="profile-container">
+        <div class="profile-background"></div> <!-- Fond en demi-cercle inversé -->
+        <h1>Profil de {{ user.username }}</h1>
+        <div class="profile-info">
+            <div class="profile-image">
+                {% if user.getPhotoProfil() %}
+                    <img src="{{ asset('uploads/' ~ user.getPhotoProfil()) }}" alt="Photo de profil">
+                {% else %}
+                    <div class="no-image">Pas de photo de profil</div>
+                {% endif %}
+            </div>
+            <div class="profile-details">
+                <p id="username">{{ user.username }}</p>
+                <p>Utilisateur depuis : {{ user.getDateInscription()|date('d/m/Y') }}</p>
+            </div>
+        </div>
+
+        <div class="pheader-links">
+            <a href="#!" id="my-recipes-link" class="active">Mes recettes</a>
+            <a href="#!" id="liked-recipes-link">Recettes aimées</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="my-recipes" class="recipes-section active">
+            <h2>Mes recettes</h2>
+            {% if myRecipes is empty %}
+                <p>Aucune recette créée.</p>
+            {% else %}
+                <div class="recette-grid">
+                    {% for recette in myRecipes %}
+                        <div class="recette-card {% if recette.difficulte == 1 %}facile{% elseif recette.difficulte == 2 %}moyenne{% else %}difficile{% endif %}">
+                            <div class="recette-header" style="position: relative;">
+                                <div class="user-info">
+                                    {% set user = recette.user %}
+                                    <div style="display: flex; align-items: center;">
+                                        <div style="margin-right: 10px;">
+                                            {% if user.photoProfil %}
+                                                <img src="{{ asset('uploads/' ~ user.photoProfil) }}" alt="Photo de profil" style="width: 50px; height: 50px; border-radius: 50%;">
+                                            {% else %}
+                                                <div class="no-image">Pas de photo de profil</div>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <p>{{ user.username }}</p>
+                                            <p>{{ recette.getDateCreation()|date('d/m/Y H:i') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="heart-icon-container" style="position: absolute; top: calc(100% + 100px); right: 10px;">
+                                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                        {% set currentUser = app.user %}
+                                        <form action="{{ path('app_recette_like', {'id': recette.id}) }}" method="post">
+                                            <button type="submit" class="heart-icon{% if currentUser and recette.isFavori(currentUser) %} is-favori{% endif %}">
+                                                {% if currentUser and recette.isFavori(currentUser) %}
+                                                    <i class="bx bxs-heart heart-icon"></i>
+                                                {% else %}
+                                                    <i class='bx bx-heart heart-icon'></i>
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <a href="{{ path('app_login') }}">
+                                            <i class='bx bx-heart heart-icon'></i>
+                                        </a>
+                                    {% endif %}
+                                    <span class="likes-count">{{ recette.getNombreLikes() }}</span>
+                                </div>
+                            </div>
+                            <div class="categories" style="text-align: right;"> {# Alignement à droite #}
+                                {% for category in recette.categories %}
+                                    <span class="category" style="color: {{ category.couleur }}">{{ category.nom }}</span>
+                                {% endfor %}
+                            </div>
+                            <h3>{{ recette.titre }}</h3>
+                            <p>{{ recette.getDescription() }}</p>
+                            {% set total_time = recette.tempPrep + recette.tempCuisson %}
+                            {% set hours = total_time // 60 %}
+                            {% set minutes = total_time % 60 %}
+                            {% set display_time = (hours > 0 ? hours ~ 'h ' : '') ~ (minutes > 0 ? minutes ~ 'm' : '') %}
+                            <div class="time-info">
+                                <i class='bx bx-time'></i>{{ display_time }}
+                            </div>
+                            <p>Difficulté:
+                                {% if recette.difficulte == 1 %}
+                                    <span style="color: green;">Facile</span>
+                                {% elseif recette.difficulte == 2 %}
+                                    <span style="color: orange;">Moyenne</span>
+                                {% else %}
+                                    <span style="color: red;">Difficile</span>
+                                {% endif %}
+                            </p>
+                            {% if recette.contenu %}
+                                {% set filename = recette.contenu %}
+                                {% set extension = filename|split('.')[1]|lower %}
+                                {% if extension in ['jpg', 'jpeg', 'png', 'gif','webp'] %}
+                                    <img src="{{ asset('uploads/' ~ filename) }}" alt="Image" class="recette-image">
+                                {% else %}
+                                    {{ filename }}
+                                {% endif %}
+                            {% else %}
+                                No content
+                            {% endif %}
+                            <p>
+                                <a href="{{ path('app_recette_show', {'id': recette.id}) }}" style="margin-right: 10px;"><i class='bx bx-show' style="font-size: 30px; color: black;"></i></a>
+                                {% if is_granted('ROLE_USER') and recette.user == app.user %}
+                                    <a href="{{ path('app_recette_edit', {'id': recette.id}) }}" style="margin-right: 10px;"><i class='bx bx-edit' style="font-size: 30px; color: black;"></i></a>
+                                    <a href="{{ path('app_recette_delete', {'id': recette.id}) }}"><i class='bx bx-x' style="font-size: 40px; color: black; position: absolute; top: 10px; right: 10px;"></i></a>
+                                {% endif %}
+                                <a href="{{ path('app_recette_commentaires', {'id': recette.id}) }}" style="position: absolute; bottom: 10px; right: 10px;"><i class='bx bx-message-square-dots' style="font-size: 30px; color: black;"></i> ({{ recette.commentaires|length }})</a>
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="liked-recipes" class="recipes-section">
+            <h2>Mes recettes aimées</h2>
+            {% if likedRecipes is empty %}
+                <p>Aucune recette aimée.</p>
+            {% else %}
+                <div class="recette-grid">
+                    {% for recette in likedRecipes %}
+                        <div class="recette-card {% if recette.difficulte == 1 %}facile{% elseif recette.difficulte == 2 %}moyenne{% else %}difficile{% endif %}">
+                            <div class="recette-header" style="position: relative;">
+                                <div class="user-info">
+                                    {% set user = recette.user %}
+                                    <div style="display: flex; align-items: center;">
+                                        <div style="margin-right: 10px;">
+                                            {% if user.photoProfil %}
+                                                <img src="{{ asset('uploads/' ~ user.photoProfil) }}" alt="Photo de profil" style="width: 50px; height: 50px; border-radius: 50%;">
+                                            {% else %}
+                                                <div class="no-image">Pas de photo de profil</div>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <p>{{ user.username }}</p>
+                                            <p>{{ recette.getDateCreation()|date('d/m/Y H:i') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="heart-icon-container" style="position: absolute; top: calc(100% + 100px); right: 10px;">
+                                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                        {% set currentUser = app.user %}
+                                        <form action="{{ path('app_recette_like', {'id': recette.id}) }}" method="post">
+                                            <button type="submit" class="heart-icon{% if currentUser and recette.isFavori(currentUser) %} is-favori{% endif %}">
+                                                {% if currentUser and recette.isFavori(currentUser) %}
+                                                    <i class="bx bxs-heart heart-icon"></i>
+                                                {% else %}
+                                                    <i class='bx bx-heart heart-icon'></i>
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <a href="{{ path('app_login') }}">
+                                            <i class='bx bx-heart heart-icon'></i>
+                                        </a>
+                                    {% endif %}
+                                    <span class="likes-count">{{ recette.getNombreLikes() }}</span>
+                                </div>
+                            </div>
+                            <div class="categories" style="text-align: right;"> {# Alignement à droite #}
+                                {% for category in recette.categories %}
+                                    <span class="category" style="color: {{ category.couleur }}">{{ category.nom }}</span>
+                                {% endfor %}
+                            </div>
+                            <h3>{{ recette.titre }}</h3>
+                            <p>{{ recette.getDescription() }}</p>
+                            {% set total_time = recette.tempPrep + recette.tempCuisson %}
+                            {% set hours = total_time // 60 %}
+                            {% set minutes = total_time % 60 %}
+                            {% set display_time = (hours > 0 ? hours ~ 'h ' : '') ~ (minutes > 0 ? minutes ~ 'm' : '') %}
+                            <div class="time-info">
+                                <i class='bx bx-time'></i>{{ display_time }}
+                            </div>
+                            <p>Difficulté:
+                                {% if recette.difficulte == 1 %}
+                                    <span style="color: green;">Facile</span>
+                                {% elseif recette.difficulte == 2 %}
+                                    <span style="color: orange;">Moyenne</span>
+                                {% else %}
+                                    <span style="color: red;">Difficile</span>
+                                {% endif %}
+                            </p>
+                            {% if recette.contenu %}
+                                {% set filename = recette.contenu %}
+                                {% set extension = filename|split('.')[1]|lower %}
+                                {% if extension in ['jpg', 'jpeg', 'png', 'gif','webp'] %}
+                                    <img src="{{ asset('uploads/' ~ filename) }}" alt="Image" class="recette-image">
+                                {% else %}
+                                    {{ filename }}
+                                {% endif %}
+                            {% else %}
+                                No content
+                            {% endif %}
+                            <p>
+                                <a href="{{ path('app_recette_show', {'id': recette.id}) }}" style="margin-right: 10px;"><i class='bx bx-show' style="font-size: 30px; color: black;"></i></a>
+                                {% if is_granted('ROLE_USER') and recette.user == app.user %}
+                                    <a href="{{ path('app_recette_edit', {'id': recette.id}) }}" style="margin-right: 10px;"><i class='bx bx-edit' style="font-size: 30px; color: black;"></i></a>
+                                    <a href="{{ path('app_recette_delete', {'id': recette.id}) }}"><i class='bx bx-x' style="font-size: 40px; color: black; position: absolute; top: 10px; right: 10px;"></i></a>
+                                {% endif %}
+                                <a href="{{ path('app_recette_commentaires', {'id': recette.id}) }}" style="position: absolute; bottom: 10px; right: 10px;"><i class='bx bx-message-square-dots' style="font-size: 30px; color: black;"></i> ({{ recette.commentaires|length }})</a>
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const myRecipesLink = document.getElementById('my-recipes-link');
+            const likedRecipesLink = document.getElementById('liked-recipes-link');
+            const myRecipesSection = document.getElementById('my-recipes');
+            const likedRecipesSection = document.getElementById('liked-recipes');
+
+            myRecipesLink.addEventListener('click', function() {
+                myRecipesLink.classList.add('active');
+                likedRecipesLink.classList.remove('active');
+                myRecipesSection.classList.add('active');
+                likedRecipesSection.classList.remove('active');
+            });
+
+            likedRecipesLink.addEventListener('click', function() {
+                likedRecipesLink.classList.add('active');
+                myRecipesLink.classList.remove('active');
+                likedRecipesSection.classList.add('active');
+                myRecipesSection.classList.remove('active');
+            });
+        });
+    </script>
+{% endblock %}
